@@ -6,7 +6,7 @@ COM_PORT = '/dev/ttyACM0'  # 請自行修改序列埠名稱
 BAUD_RATES = 9600
 ser = serial.Serial(COM_PORT, BAUD_RATES)
 
-try:
+if __name__=='__main__':
     while True:
         # 接收用戶的輸入值並轉成小寫
         choice = input('按1~5開燈、按0關燈、按e關閉程式  ').lower()
@@ -45,10 +45,7 @@ try:
         while ser.in_waiting:
             mcu_feedback = ser.readline().decode()  # 接收回應訊息並解碼
             print('控制板回應：', mcu_feedback)
-            
-except KeyboardInterrupt:
-    ser.close()
-    print('再見！')
+
 
 
 
