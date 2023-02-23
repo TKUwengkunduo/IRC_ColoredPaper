@@ -121,9 +121,10 @@ void loop(){
 */
   // 向左(至C點)
   Serial.println("Leftward Start");
-  Leftward(3, 0, 160, 200);    // 參考牆(右), 距離大於160停止, 速度255
+  Leftward(3, 0, 160, 255);    // 參考牆(左), 距離小於120停止, 速度255
   Serial.println("Leftward end");
   delay(2000);
+
 }
 
 
@@ -421,7 +422,7 @@ unsigned long sr04(int num) {
   digitalWrite(trigPin[num], LOW);
 
   float d = pulseIn(echoPin[num], HIGH) * 0.017;
-
+  
   Serial.print(num);
   Serial.print(": ");
   Serial.print(d,0);
