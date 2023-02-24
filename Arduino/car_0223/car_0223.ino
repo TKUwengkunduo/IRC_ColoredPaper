@@ -19,7 +19,7 @@
  * |---------------------------|
  * 
  * 車子構造
- *  |2|-0-----車頭-----1-|0|
+ *  |3|-0-----車頭-----1-|0|
  *   |                   |
  *   |                   |
  *   |                   |
@@ -29,7 +29,7 @@
  *   |                   |
  *   |                   |
  *   |                   |
- *  |3|-4-------------3-|1|
+ *  |2|-4-------------3-|1|
  *  
  *                            ENA  IN1  IN2  IN3  IN4  ENB
  *  右 L298N (0號馬達、1號馬達):   9   13   12   11   10    8
@@ -94,58 +94,100 @@ void loop(){
   int i=0;
   
   while(Serial.read()!='1'){} //串口監視器輸入1以開始
-
+/*
   // 後退(A點至B點)
   Serial.println("Backward Start");
   Backward(1, 1, 25, 255); // 參考牆(後), 距離小於25停止, 速度255
   Serial.println("Backward End");
-  delay(2000);
+  //delay(100);
 
   // 調整角度
   Serial.println("Reset Angle Start");
-  Reset_angle(150);
+  Reset_angle(100);
   Serial.println("Reset Angle End");
-  delay(1000);
+  delay(3300);
 
   // 前進(至AB中點)
   Serial.println("Forward Start");
   Forward(1, 0, 130, 255);   // 參考牆(後), 距離大於130停止, 速度255
   Serial.println("Forward End");
-  delay(2000);
+  //delay(100);
 
   // 向左(至中間牆)
   Serial.println("Leftward Start");
   Leftward(2, 1, 25, 255);     // 參考牆(左), 距離小於25停止, 速度255
   Serial.println("Leftward End");
-  delay(2000);
+  //delay(100);
 
   // 後退(至C點右側)
   Serial.println("Backward Start");
-  Backward(1, 1, 50, 255);  // 參考牆(後), 距離小於40停止, 速度255
+  Backward(1, 1, 55, 255);  // 參考牆(後), 距離小於55停止, 速度255
   Serial.println("Backward End");
-  delay(2000);
+  //delay(100);
 
   // 調整角度
   Serial.println("Reset Angle Start");
-  Reset_angle(150);
+  Reset_angle(100);
   Serial.println("Reset Angle End");
-  delay(1000);
+  //delay(100);
 
   // 向左(至C點)
   Serial.println("Leftward Start");
-  Leftward(3, 0, 160, 200);    // 參考牆(右), 距離大於160停止, 速度255
+  Leftward(3, 0, 160, 255);    // 參考牆(右), 距離大於160停止, 速度255
   Serial.println("Leftward End");
-  delay(2000);
+  //delay(3000);
 
   // 調整角度
   Serial.println("Reset Angle Start");
-  Reset_angle(150);
+  Reset_angle(100);
   Serial.println("Reset Angle End");
-  delay(1000);
+  //delay(3300);
 
+  // 前進(至C點內)
+  Serial.println("Forward Start");
+  Forward(1, 0, 60, 255);   // 參考牆(後), 距離大於130停止, 速度255
+  Serial.println("Forward End");
+  //delay(100);
+
+  // 調整角度
+  Serial.println("Reset Angle Start");
+  Reset_angle(100);
+  Serial.println("Reset Angle End");
+  delay(3300);
+  */
+
+  // 循線
+  Serial.println("Follow Line Start");
+  FollowLine(150);    //循線速度
+  Serial.println("Follow Line End");
+  delay(3300);
 }
 
 
+//========================= Follow Line =========================//
+void FollowLine(float spd){
+  String str;
+  while(1){
+    if (Serial.available()){
+      str = Serial.readStringUntil('\n');
+      if (str == "p"){
+        RightLine_IN();
+        SetSpeed_EN(spd);
+        Serial.println("Get p");
+      }
+      if (str == "n"){
+        LeftLine_IN();
+        SetSpeed_EN(spd);
+        Serial.println("Get n");
+      }
+      if (str == "o"){
+        Forward_IN();
+        SetSpeed_EN(spd);
+        Serial.println("Get o");
+      }
+    }
+  }
+}
 
 //========================= Forward =========================//
 void Forward(int reference, int compare, int target, int spd){
@@ -386,12 +428,7 @@ void Reset_angle(int spd){
 }
 
 
-void Reset_dis(int reference, int target, int spd){
-  
-}
-
-
-
+//========================= Reference Wall Setting =========================//
 int Select_sensor(int reference){
   // 輸入參考面 輸出感應器編號
   int sensor = 0;
@@ -407,6 +444,7 @@ int Select_sensor(int reference){
 }
 
 
+//========================= Sensor Setting =========================//
 unsigned long sr04(int num) { 
   digitalWrite(trigPin[num], HIGH);
   delayMicroseconds(10);  
@@ -422,6 +460,7 @@ unsigned long sr04(int num) {
     return d;
   }
 }
+
 
 //========================= IN Setting =========================//
 void Forward_IN(){
@@ -458,12 +497,34 @@ void Leftward_IN(){
 }
 
 void Rightward_IN(){
-  digitalWrite(MIN[0][0],HIGH);
+  digitalWrite(MIN[0][0],LOW);
+  digitalWrite(MIN[0][1],LOW);
+  digitalWrite(MIN[1][0],LOW);
+  digitalWrite(MIN[1][1],HIGH);
+  digitalWrite(MIN[2][0],HIGH);
+  digitalWrite(MIN[2][1],LOW);
+  digitalWrite(MIN[3][0],LOW);
+  digitalWrite(MIN[3][1],LOW);
+}
+
+void LeftLine_IN(){
+  digitalWrite(MIN[0][0],LOW);
+  digitalWrite(MIN[0][1],HIGH);
+  digitalWrite(MIN[1][0],LOW);
+  digitalWrite(MIN[1][1],LOW);
+  digitalWrite(MIN[2][0],HIGH);
+  digitalWrite(MIN[2][1],LOW);
+  digitalWrite(MIN[3][0],LOW);
+  digitalWrite(MIN[3][1],LOW);
+}
+
+void RightLine_IN(){
+  digitalWrite(MIN[0][0],LOW);
   digitalWrite(MIN[0][1],LOW);
   digitalWrite(MIN[1][0],LOW);
   digitalWrite(MIN[1][1],HIGH);
   digitalWrite(MIN[2][0],LOW);
-  digitalWrite(MIN[2][1],HIGH);
+  digitalWrite(MIN[2][1],LOW);
   digitalWrite(MIN[3][0],HIGH);
   digitalWrite(MIN[3][1],LOW);
 }
@@ -500,6 +561,7 @@ void Counterclockwise_IN(){
   digitalWrite(MIN[3][0],LOW);
   digitalWrite(MIN[3][1],HIGH);
 }
+
 
 //========================= EN Setting =========================//
 void SetSpeed_EN(float spd){
