@@ -116,9 +116,16 @@ def draw_boxes(detections, image, colors):
 
 
 def detect(img):
+    detections = 0
     detections = image_detection(img,network, class_names, class_colors, thresh=0.8)
-    return detections[0][0]
-
+    # cv2.imshow('img', img)
+    # cv2.waitKey(0)
+    # print(detections,len(detections))
+    if len(detections)!=0:
+        return detections[0][0]
+    else:
+        return 0
+    
 """
 主程式
     程式流程:
