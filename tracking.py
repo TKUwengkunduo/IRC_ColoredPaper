@@ -31,15 +31,16 @@ def get_line_position(org_img):
 
     # 計算線
     weights = 0
-    for line in lines:  
-        for x1,y1,x2,y2 in line:
-            angle = math.degrees(math.atan2((y2-y1),(x2-x1)))
-            if ((angle>30 and angle<150) or (angle<-30 and angle>-150)):
-                weights += (((x1+x2)-720)*6)*((y1/345)*4)
-                # weights += ((x1+x2)-720)*(y1/345)*100
-                cv2.putText(org_img, str(weights), (x1,y1), cv2.FONT_HERSHEY_SIMPLEX, .5, (0, 255, 255), 1, cv2.LINE_AA)
-                cv2.line(org_img, (x1,y1), (x2,y2), (0,0,255), 2)
-        weights = weights/len(lines)
+    if type(lines) == np.ndarray:
+        for line in lines:  
+            for x1,y1,x2,y2 in line:
+                angle = math.degrees(math.atan2((y2-y1),(x2-x1)))
+                if ((angle>30 and angle<150) or (angle<-30 and angle>-150)):
+                    weights += (((x1+x2)-720)*6)*((y1/345)*4)
+                    # weights += ((x1+x2)-720)*(y1/345)*100
+                    cv2.putText(org_img, str(weights), (x1,y1), cv2.FONT_HERSHEY_SIMPLEX, .5, (0, 255, 255), 1, cv2.LINE_AA)
+                    cv2.line(org_img, (x1,y1), (x2,y2), (0,0,255), 2)
+            weights = weights/len(lines)
     # cv2.imshow('org_img', org_img)
     # cv2.waitKey(1)
 

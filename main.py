@@ -6,35 +6,67 @@ import sys
 
 COM_PORT = '/dev/ttyACM0'  # 請自行修改序列埠名稱
 BAUD_RATES = 9600
-ser = serial.Serial(COM_PORT, BAUD_RATES)
+ser = serial.Serial(COM_PORT, BAUD_RATES, timeout=0.1)
 
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
+cap2 = cv2.VideoCapture(2)
+cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
 
 if __name__=='__main__':
     while True:
-        ret, img = cap.read()
-        reslut = YOLO_Detect.detect(img)
-        print(reslut)
-        # while ser.in_waiting:
-        #     mcu_feedback = ser.readline().decode()  # 接收回應訊息並解碼
-        #     print('控制板回應：', mcu_feedback)
+        while ser.in_waiting:
+            mcu_feedback = ser.readline().decode()  # 接收回應訊息並解碼
         
-        #     if(mcu_feedback )
-        
-        
+            if(mcu_feedback[:-2] == "TT"):
+                while True:
+                    mcu_feedback = ser.readline().decode()
+                    ret, img = cap.read()
+                    weights = tracking.get_line_position(img)
+                    if(weights > 0):
+                        ser.write(b'p\n')  # 訊息必須是位元組類型
+                        print("return " , weights)
+                    if(weights < 0):
+                        ser.write(b'n\n')  # 訊息必須是位元組類型
+                        print("return " , weights)
+                    if(weights == 0):
+                        ser.write(b'o\n')  # 訊息必須是位元組類型
+                        print("return " , weights)
 
-        # ret, img = cap.read()
-        # weights = tracking.get_line_position(img)
-        # if(weights > 0):
-        #     ser.write(b'p\n')  # 訊息必須是位元組類型
-        # if(weights < 0):
-        #     ser.write(b'n\n')  # 訊息必須是位元組類型
-        # if(weights == 0):
-        #     ser.write(b'o\n')  # 訊息必須是位元組類型
-        # print(weights)
+                    print(mcu_feedback)
+                    if(mcu_feedback[:-2] == "SS"):
+                        print('end')
+                        break
+            
+            if(mcu_feedback[:-2] == "YY"):
+                ret, img = cap2.read()
+                reslut = YOLO_Detect.detect(img)
+                if(reslut == '0'):
+                    ser.write(b'N\n')
+                    print('NoColor')
+                elif(reslut == '1'):
+                    ser.write(b'R\n')
+                    print('Red')
+                elif(reslut == '2'):
+                    ser.write(b'G\n')
+                    print('Green')
+                elif(reslut == '3'):
+                    ser.write(b'B\n')
+                    print('Blue')
+                else:
+                    ser.write(b'N\n')
+                    print('else')
+                    
+        
+        # img = cv2.imread('/home/ickab/IRC_ColoredPaper/test_img/Green_0057.jpg')
+        # reslut = YOLO_Detect.detect(img)
+        # print(reslut)
+
+        
 
         
 
