@@ -9,11 +9,11 @@ COM_PORT = '/dev/ttyACM0'  # 請自行修改序列埠名稱
 BAUD_RATES = 9600
 ser = serial.Serial(COM_PORT, BAUD_RATES, timeout=0.1)
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(2)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
-cap2 = cv2.VideoCapture(1)
+cap2 = cv2.VideoCapture(0)
 cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 

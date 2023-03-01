@@ -156,7 +156,7 @@ void loop(){
   Reset_angle(80, 3, 4);
 
   // 循線
-  FollowLine(190);    //循線速度
+  FollowLine(170);    //循線速度
   Serial.println("SS");
   Serial.println("SS");
   delay(500);
@@ -164,14 +164,14 @@ void loop(){
   Serial.println("SS");
 
   // 前進+左移(至D點內)
-  Forward(0, 1, 60, 255);   // 參考牆(前), 距離小於60停止, 速度255
+  Forward(0, 1, 60, 200);   // 參考牆(前), 距離小於60停止, 速度255
   Leftward(2, 1, 130, 255);    // 參考牆(左), 距離小於150停止, 速度255
   
   // 調整角度
   Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)
 
   // 前進+左移(至D點內)
-  Forward(0, 1, 60, 255);   // 參考牆(前), 距離小於60停止, 速度255
+  Forward(0, 1, 60, 200);   // 參考牆(前), 距離小於60停止, 速度255
   Leftward(2, 1, 130, 255);    // 參考牆(左), 距離小於150停止, 速度255
   
   // 調整角度
@@ -194,21 +194,24 @@ void loop(){
 
   // 調整角度
   Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)
+  Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)
 
 //  Serial.println(color);
   if(color == 1){
     delay(500);
     Serial.println("aR");
-    Forward(0, 1, 20, 255);   // 參考牆(前), 距離小於25停止, 速度255
-    Forward(0, 1, 20, 255);   // 參考牆(前), 距離小於25停止, 速度255
-    Leftward(2, 1, 25, 255);    // 參考牆(左), 距離小於60停止, 速度255
+    Reset_angle(90, 0, 1);   // 調整角度(速度, 感測器A, 感測器B) 
+    Forward(0, 1, 20, 120);   // 參考牆(前), 距離小於25停止, 速度255
+    Leftward(2, 1, 25, 200);    // 參考牆(左), 距離小於60停止, 速度255
     Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)  
+    Stop();
   }
   if(color == 2){
     Serial.println("aG");
-    Go_Green();
+    Backward(1, 1, 145, 120);   // 參考牆(後), 距離小於145停止, 速度255
     Leftward(2, 1, 25, 255);    // 參考牆(左), 距離小於60停止, 速度255
-    Reset_angle(80, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)  
+    Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B) 
+    Forward(0, 1, 120, 120);   // 參考牆(前), 距離小於25停止, 速度255
   }
   if(color == 3){
     Serial.println("aB");
@@ -431,7 +434,7 @@ void Reset_angle(int spd, int sensorA, int sensorB){
   float min = -0.5;
   float max = 0.5;
   // min = 0, max = 0;
-  while((disA - disB) < min || (disA - disB) > max || TimeLag > 5000){
+  while((disA - disB) < min || (disA - disB) > max){
     if ((disA - disB) < min){       //超聲波A比較近
       Counterclockwise_IN();        //順時針轉
       SetSpeed_EN(spd);
@@ -450,6 +453,9 @@ void Reset_angle(int spd, int sensorA, int sensorB){
     // Serial.print("disB:");
     // Serial.println(disB);
     TimeLag = millis() - myTime;
+    if(TimeLag>5000){
+      break;
+    }
   }
   Stop();
 }
@@ -681,14 +687,14 @@ void SetSpeed_EN(float spd){
 
 void LeftLineSpeed_EN(float spd){
   analogWrite(MEN[0],spd);
-  analogWrite(MEN[1],spd*0.13);
+  analogWrite(MEN[1],spd*0.15);
   analogWrite(MEN[2],spd);
-  analogWrite(MEN[3],spd*0.13);
+  analogWrite(MEN[3],spd*0.15);
 }
 
 void RightLineSpeed_EN(float spd){
-  analogWrite(MEN[0],spd*0.13);
+  analogWrite(MEN[0],spd*0.15);
   analogWrite(MEN[1],spd);
-  analogWrite(MEN[2],spd*0.13);
+  analogWrite(MEN[2],spd*0.15);
   analogWrite(MEN[3],spd);
 }
