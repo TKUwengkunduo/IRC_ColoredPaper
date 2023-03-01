@@ -54,7 +54,7 @@ const byte echoPin[6] = {31,35,39,43,47,51};
 // compare=比較方法(0=大於,1=小於)
 // target=目標距離(數值)
 // spd=速度(0~255)
-String YOLODetect();
+int YOLODetect();
 void FollowLine(float spd);
 void Forward(int reference, int compare, int target, int spd);
 void Backward(int reference, int compare, int target, int spd);
@@ -106,106 +106,117 @@ void setup(){
 void loop(){
   int FLAG=0;
   int i=0;
-  String color = "Red";
+  int color=1;
 
   while(Serial.read()!='1'){} //串口監視器輸入1以開始
-/*
+
   // 後退(A點至B點)
   Backward(1, 1, 25, 255); // 參考牆(後), 距離小於25停止, 速度255
   //delay(100);
 
   // 調整角度
-  Reset_angle(50, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
-  delay(3300);
+  Reset_angle(80, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
+  delay(3150);
+
+  // 向左(至A點)
+  // Leftward(2, 1, 45, 255);     // 參考牆(左), 距離小於25停止, 速度255  
 
   // 前進(至AB中點)
-  Forward(1, 0, 150, 255);   // 參考牆(後), 距離大於150停止, 速度255
+  Forward(1, 0, 130, 255);   // 參考牆(後), 距離大於135停止, 速度255
   //delay(100);
 
   // 向左(至中間牆)
-  Leftward(2, 1, 25, 255);     // 參考牆(左), 距離小於25停止, 速度255
+  Leftward(2, 1, 30, 255);     // 參考牆(左), 距離小於25停止, 速度255
   //delay(100);
 
   // 後退(至C點右側)
-  Backward(1, 1, 55, 255);  // 參考牆(後), 距離小於55停止, 速度255
+  Backward(1, 1, 40, 255);  // 參考牆(後), 距離小於55停止, 速度255
   //delay(100);
 
   // 調整角度
-  Reset_angle(50, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
+  Reset_angle(80, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
   //delay(100);
 
   // 向左(至C點)
-  Leftward(3, 0, 160, 255);    // 參考牆(右), 距離大於160停止, 速度255
+  Leftward(3, 0, 150, 255);    // 參考牆(右), 距離大於150停止, 速度255
   //delay(3000);
 
   // 調整角度
-  Reset_angle(50, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
+  Reset_angle(80, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
   //delay(3300);
 
-  // 前進(至C點內)
-  Forward(1, 0, 60, 255);   // 參考牆(後), 距離大於130停止, 速度255
-  //delay(100);
+  // 前進+左移(至C點內)
+  Forward(1, 0, 60, 255);   // 參考牆(後), 距離大於65停止, 速度255
+  Leftward(2, 1, 135, 255);    // 參考牆(左), 距離小於150停止, 速度255
+  //delay(100)
 
   // 調整角度
-  Reset_angle(50, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
-  delay(3300);
-*/
+  Reset_angle(80, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
+  delay(2000);  //c點停留3秒
+  Reset_angle(80, 3, 4);
 
   // 循線
-  // // // Serial.println("Follow Line Start");
-//  FollowLine/(200);    //循線速度
-   // // Serial.println("Follow Line End");
-  // delay(3300);
+  FollowLine(190);    //循線速度
+  Serial.println("SS");
+  Serial.println("SS");
+  delay(500);
+  Serial.println("SS");
+  Serial.println("SS");
 
-//  // 前進(至D點內)
-//  Forward(1, 0, 60, 255);   // 參考牆(後), 距離大於130停止, 速度255
-//  // delay(3300);
-//
-//  // 調整角度
-//  Reset_angle(50, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)
-//  delay(3300);
+  // 前進+左移(至D點內)
+  Forward(0, 1, 60, 255);   // 參考牆(前), 距離小於60停止, 速度255
+  Leftward(2, 1, 130, 255);    // 參考牆(左), 距離小於150停止, 速度255
+  
+  // 調整角度
+  Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)
+
+  // 前進+左移(至D點內)
+  Forward(0, 1, 60, 255);   // 參考牆(前), 距離小於60停止, 速度255
+  Leftward(2, 1, 130, 255);    // 參考牆(左), 距離小於150停止, 速度255
+  
+  // 調整角度
+  Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)
+  
+  delay(3150);
 
   // YOLO辨識
   color = YOLODetect();   // 調整速度, 感測器A, 感測器B
-  Serial.println("color=");
-  Serial.println(color);
-  Serial.println("color=");
-  Serial.println(color);
-  Serial.println("color=");
-  Serial.println(color);
-  // delay(2999999);
+//  Serial.println("color=");
+//  Serial.println(color);
+//  Serial.println("color=");
+//  Serial.println(color);
+//  Serial.println("color=");
+//  Serial.println(color);
   // delay(3300);
 
- // 向左(至顏色區)
-  Leftward(2, 1, 25, 255);    // 參考牆(左), 距離小於60停止, 速度255
+  // 向左(至顏色區)
+  Leftward(2, 1, 60, 255);    // 參考牆(左), 距離小於60停止, 速度255
 
- // 調整角度
-  Reset_angle(50, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)
+  // 調整角度
+  Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)
 
-  Serial.println(color);
-  if(color == "R"){
-    Serial.println("GO R");
-    Go_Red();
+//  Serial.println(color);
+  if(color == 1){
+    delay(500);
+    Serial.println("aR");
+    Forward(0, 1, 20, 255);   // 參考牆(前), 距離小於25停止, 速度255
+    Forward(0, 1, 20, 255);   // 參考牆(前), 距離小於25停止, 速度255
     Leftward(2, 1, 25, 255);    // 參考牆(左), 距離小於60停止, 速度255
-    Reset_angle(50, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
+    Reset_angle(80, 0, 1);   // 調整角度(速度, 感測器A, 感測器B)  
   }
-
-  if(color == "G"){
-    Serial.println("GO G");
+  if(color == 2){
+    Serial.println("aG");
     Go_Green();
     Leftward(2, 1, 25, 255);    // 參考牆(左), 距離小於60停止, 速度255
-    Reset_angle(50, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
+    Reset_angle(80, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)  
   }
-
-  if(color == "B"){
-    Serial.println("GO B");
-    // Go_Green();   
-    // Reset_angle(50, 3, 4);   // 調整速度, 感測器A, 感測器B
+  if(color == 3){
+    Serial.println("aB");
     Go_Blue();
     Leftward(2, 1, 25, 255);    // 參考牆(左), 距離小於60停止, 速度255
-    Reset_angle(50, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)
+    Reset_angle(80, 3, 4);   // 調整角度(速度, 感測器A, 感測器B)  
   }
-
+  
 }
 
 
@@ -216,7 +227,6 @@ void Forward(int reference, int compare, int target, int spd){
   int sensor_num = Select_sensor(reference);
   float dis = sr04(sensor_num);
 
-  // // // Serial.println("Forward Start");
   // set motor dir (01:CW, 10:CCW)
   Forward_IN();
 
@@ -236,6 +246,8 @@ void Forward(int reference, int compare, int target, int spd){
         Backward_IN();
         SetSpeed_EN(spd * 0.5);
       }
+      //Serial.println(dis);
+      delay(2);
     }
   }else{                        // 小於
     while(dis > target || cnt < 10){
@@ -251,11 +263,10 @@ void Forward(int reference, int compare, int target, int spd){
         Backward_IN();
         SetSpeed_EN(spd * 0.5);
       }
+      delay(2);
     }
   }
   Stop();
-  // // // // Serial.println(cnt);
-  // // // Serial.println("Forward End");
 }
 
 
@@ -266,7 +277,6 @@ void Backward(int reference, int compare, int target, int spd){
   int sensor_num = Select_sensor(reference);
   float dis = sr04(sensor_num);
   
-  // // // Serial.println("Backward Start");
   // set motor dir (01:CW, 10:CCW)
   Backward_IN();
 
@@ -286,6 +296,7 @@ void Backward(int reference, int compare, int target, int spd){
         Forward_IN();
         SetSpeed_EN(spd * 0.5);
       }
+      delay(2);
     }
   }else{                        // 小於
     while(dis > target || cnt < 10){
@@ -301,11 +312,11 @@ void Backward(int reference, int compare, int target, int spd){
         Forward_IN();
         SetSpeed_EN(spd * 0.5);
       }
+//    Serial.println(dis);
+      delay(2);
     }
   }
   Stop();
-  // // // // Serial.println(cnt);
-  // // // Serial.println("Backward End");
 }
 
 
@@ -315,7 +326,6 @@ void Leftward(int reference, int compare, int target, int spd){
   int sensor_num = Select_sensor(reference);
   float dis = sr04(sensor_num);
 
-  // // // Serial.println("Leftward Start");
   // set motor dir (01:CW, 10:CCW)
   Leftward_IN();
 
@@ -335,6 +345,7 @@ void Leftward(int reference, int compare, int target, int spd){
         Rightward_IN();
         SetSpeed_EN(spd * 0.5);
       }
+      delay(2);
     }
   }else{                        // 小於
     while(dis > target || cnt < 10){
@@ -350,11 +361,10 @@ void Leftward(int reference, int compare, int target, int spd){
         Rightward_IN();
         SetSpeed_EN(spd * 0.5);
       }
+      delay(2);
     }
   }
   Stop();
-  // // // // Serial.println(cnt);
-  // // // Serial.println("Leftward End");
 }
 
 
@@ -364,7 +374,6 @@ void Rightward(int reference, int compare, int target, int spd){
   int sensor_num = Select_sensor(reference);
   float dis = sr04(sensor_num);
 
-  // // // Serial.println("Rightward Start");
   // set motor dir (01:CW, 10:CCW)
   Rightward_IN();
 
@@ -402,8 +411,6 @@ void Rightward(int reference, int compare, int target, int spd){
     }
   }
   Stop();
-  // // // // Serial.println(cnt);
-  // // // Serial.println("Rightward End");
 }
 
 
@@ -416,48 +423,53 @@ void Stop(){
 
 //========================= Reset Angle =========================//
 void Reset_angle(int spd, int sensorA, int sensorB){
-  // // // Serial.println("Reset Angle Start");
+  unsigned long myTime;
+  unsigned long TimeLag = 0;
+  myTime = millis();
   float disA = sr04(sensorA);
   float disB = sr04(sensorB);
   float min = -0.5;
   float max = 0.5;
-  while((disA - disB) < min || (disA - disB) > max){
-    disA = sr04(sensorA);
-    disB = sr04(sensorB);
-    // Serial.print(disA);
-    // Serial.print(",");
-    // // // Serial.println(disB);
+  // min = 0, max = 0;
+  while((disA - disB) < min || (disA - disB) > max || TimeLag > 5000){
     if ((disA - disB) < min){       //超聲波A比較近
       Counterclockwise_IN();        //順時針轉
       SetSpeed_EN(spd);
+      // delay(50);
+      // Stop_IN();
     }else if((disA - disB) > max){  //超聲波B比較近
       Clockwise_IN();               //逆時針轉
       SetSpeed_EN(spd);
+      // delay(50);
+      // Stop_IN();
     }
+    disA = sr04(sensorA);
+    // Serial.print("disA:");
+    // Serial.println(disA);    
+    disB = sr04(sensorB);
+    // Serial.print("disB:");
+    // Serial.println(disB);
+    TimeLag = millis() - myTime;
   }
   Stop();
-  // // // Serial.println("Reset Angle End");
 }
+
 
 //========================= Go Red =========================//
 void Go_Red(){
-  // // // Serial.println("Go Red Start");
-  Forward(0, 1, 25, 255);   // 參考牆(前), 距離小於60停止, 速度255
-  // // // Serial.println("Go Red End");
+  Forward(0, 1, 25, 255);   // 參考牆(前), 距離小於25停止, 速度255
+  Forward(0, 1, 25, 255);   // 參考牆(前), 距離小於25停止, 速度255
+//  Serial.print("Go_Red_GOGO");
 }
 
 //========================= Go Green =========================//
 void Go_Green(){
-  // // // Serial.println("Go Green Start");
   Backward(1, 1, 145, 255);   // 參考牆(後), 距離小於145停止, 速度255
-  // // Serial.println("Go Green End");
 }
 
 //========================= Go Blue =========================//
 void Go_Blue(){
-  // // Serial.println("Go Blue Start");
   Backward(1, 1, 25, 255);   // 參考牆(後), 距離小於25停止, 速度255
-  // // Serial.println("Go Blue End");
 }
 
 //========================= Follow Line =========================//
@@ -465,6 +477,9 @@ void FollowLine(float spd){
   int sensor_num = Select_sensor(0);
   float dis = sr04(sensor_num);
   String str;
+  Serial.println("TT");
+  Serial.println("TT");
+  delay(200);
   Serial.println("TT");
 
   int cnt=0;
@@ -489,56 +504,61 @@ void FollowLine(float spd){
         SetSpeed_EN(spd);
       }
     }
- 
   }
   Stop();
   Serial.println("SS");
   Serial.println("SS");
-  delay(50);
+  delay(200);
   Serial.println("SS");
   Serial.println("SS");
-  delay(100);
+  delay(200);
   Serial.println("SS");
   Serial.println("SS");
-  delay(100);
+  delay(200);
+  Serial.println("SS");
+  Serial.println("SS");
+  delay(500);
   Serial.println("SS");
   Serial.println("SS");
 }
 
 
 //========================= YOLO Detect =========================//
-
-String YOLODetect(){
-  // // Serial.println("YOLO Detect Start");
+int YOLODetect(){
   String color;
+  int color2=1;
   int cnt=0;
+  Serial.println("YY");
+  Serial.println("YY");
+  delay(500);
+  Serial.println("YY");
+  Serial.println("YY");
   while(cnt<15){
-    Serial.println("YY");
-
+  
     if (Serial.available()){
       color = Serial.readStringUntil('\n');
       if(color == "R"){
-        color="R";
+        color2=1;
         cnt=15;
       }else if(color == "G"){
-        color="G";
+        color2=2;
         cnt=15;
       }else if(color == "B"){
-        color="B";
+        color2=3;
         cnt=15;
       }else{
-        color="GG";
+        color2=1;
         cnt++;
       }
     }
-    delay(50);
+    delay(350);
   }
 
-  if(color== "R"||color== "G"||color== "B"){
-    return color;
+  if(color2== 1||color2== 2||color2== 3){
+    return color2;
   }else{
-    color="N";
-    return color;
+    color=4;
+    return color2;
   }
 }
 
@@ -567,10 +587,6 @@ unsigned long sr04(int num) {
   float d = pulseIn(echoPin[num], HIGH) * 0.017;
   
   if(d < 500){
-    // Serial.print(num);
-    // Serial.print(": ");
-    // Serial.print(d,0);
-    // Serial.println("cm ");
     return d;
   }
 }
@@ -621,28 +637,6 @@ void Rightward_IN(){
   digitalWrite(MIN[3][1],LOW);
 }
 
-// void LeftLine_IN(){
-//   digitalWrite(MIN[0][0],LOW);
-//   digitalWrite(MIN[0][1],HIGH);
-//   digitalWrite(MIN[1][0],LOW);
-//   digitalWrite(MIN[1][1],LOW);
-//   digitalWrite(MIN[2][0],HIGH);
-//   digitalWrite(MIN[2][1],LOW);
-//   digitalWrite(MIN[3][0],LOW);
-//   digitalWrite(MIN[3][1],LOW);
-// }
-
-// void RightLine_IN(){
-//   digitalWrite(MIN[0][0],LOW);
-//   digitalWrite(MIN[0][1],LOW);
-//   digitalWrite(MIN[1][0],LOW);
-//   digitalWrite(MIN[1][1],HIGH);
-//   digitalWrite(MIN[2][0],LOW);
-//   digitalWrite(MIN[2][1],LOW);
-//   digitalWrite(MIN[3][0],HIGH);
-//   digitalWrite(MIN[3][1],LOW);
-// }
-
 void Stop_IN(){
   digitalWrite(MIN[0][0],LOW);
   digitalWrite(MIN[0][1],LOW);
@@ -685,17 +679,16 @@ void SetSpeed_EN(float spd){
   analogWrite(MEN[3],spd);
 }
 
-
 void LeftLineSpeed_EN(float spd){
   analogWrite(MEN[0],spd);
-  analogWrite(MEN[1],spd*0.15);
+  analogWrite(MEN[1],spd*0.13);
   analogWrite(MEN[2],spd);
-  analogWrite(MEN[3],spd*0.15);
+  analogWrite(MEN[3],spd*0.13);
 }
 
 void RightLineSpeed_EN(float spd){
-  analogWrite(MEN[0],spd*0.15);
+  analogWrite(MEN[0],spd*0.13);
   analogWrite(MEN[1],spd);
-  analogWrite(MEN[2],spd*0.15);
+  analogWrite(MEN[2],spd*0.13);
   analogWrite(MEN[3],spd);
 }
