@@ -18,9 +18,9 @@ import darknet
 # cap = cv2.VideoCapture(0)
 
 # 神經網路檔案位置
-cfg_path = '/home/ickab/IRC_ColoredPaper/cfg/yolov4-tiny.cfg'
-weights_path = '/home/ickab/IRC_ColoredPaper/cfg/weights/yolov4-tiny_best.weights'
-data_path = '/home/ickab/IRC_ColoredPaper/cfg/IRC_ColoredPaper.data'
+cfg_path = '/home/iclab/IRC_ColoredPaper/cfg/yolov4-tiny.cfg'
+weights_path = '/home/iclab/IRC_ColoredPaper/cfg/weights/yolov4-tiny_best.weights'
+data_path = '/home/iclab/IRC_ColoredPaper/cfg/IRC_ColoredPaper.data'
 
 
 
@@ -139,7 +139,7 @@ if __name__ == "__main__":
 
         # ret, img = cap.read()
 
-        img_name = '/home/ickab/IRC_ColoredPaper/test_img/Blue_0002.jpg'
+        img_name = '/home/iclab/IRC_ColoredPaper/test_img/Blue_0002.jpg'
         img = cv2.imread(img_name)
 
         detections = image_detection(img,network, class_names, class_colors, thresh=0.75)

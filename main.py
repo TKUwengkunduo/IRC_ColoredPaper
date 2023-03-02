@@ -5,7 +5,7 @@ import serial
 import sys
 import time
 
-COM_PORT = '/dev/ttyACM0'  # 請自行修改序列埠名稱
+COM_PORT = '/dev/ttyUSB0'  # 請自行修改序列埠名稱
 BAUD_RATES = 9600
 ser = serial.Serial(COM_PORT, BAUD_RATES, timeout=0.1)
 
@@ -44,7 +44,7 @@ if __name__=='__main__':
 
                     
                     # if(mcu_feedback[:-2] == "SS" or ((time.time()-now_time)>6)):
-                    if ((time.time()-now_time)>6):
+                    if ((time.time()-now_time)>8):
                         print('end')
                         break
                 while True:

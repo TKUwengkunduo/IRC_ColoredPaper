@@ -1,5 +1,5 @@
 classes=3
 train=../IRC_ColoredPaper/cfg/train.txt
 valid=../IRC_ColoredPaper/cfg/val.txt
-names=/home/ickab/IRC_ColoredPaper/cfg/IRC_ColoredPaper.names
+names=/home/iclab/IRC_ColoredPaper/cfg/IRC_ColoredPaper.names
 backup=../IRC_ColoredPaper/cfg/weights
